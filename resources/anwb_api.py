@@ -4,7 +4,7 @@ class api:
 
     def __init__(self):
 
-        self.api_key = "QYUEE3fEcFD7SGMJ6E7QBCMzdQGqRkAi"
+        self.api_key = "8VzRhyPujV01WvpTwnUJucejIXMt5eht"
     
 
     def api(self):
