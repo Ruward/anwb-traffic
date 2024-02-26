@@ -1,5 +1,5 @@
 from resources.parse import parser
-
+ 
 road_of_interest = "A12"
 activities_of_interest = ["jams", "roadworks", "radars"]
 
