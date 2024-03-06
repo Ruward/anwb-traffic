@@ -25,16 +25,16 @@ class parser:
 
                 segments = road["segments"]
 
-                activity_list = []
+                activity_dict = {}
 
                 for segment in segments:
 
+                    segment_info = f"{segment['start']} --> {segment['end']}"
                     interesting_things = dict(segment).keys()
                     interesting_thing = [thing for thing in interesting_things if thing in self.activities_of_interest]
                     for activities_of_interest in interesting_thing:
                         segment_all_activites = segment[activities_of_interest]
-                        for individual_activity in segment_all_activites:
-                            activity_list.append(individual_activity)
+                        activity_dict[segment_info] = segment_all_activites
         
-        return activity_list
+        return activity_dict
                
