@@ -1,7 +1,9 @@
 from resources.parse import parser
 from resources.create_msg import create_msg
 
-road_of_interest = "A12"
+import sys
+
+road_of_interest = sys.argv[len(sys.argv) -1]
 activities_of_interest = ["jams", "radars", "roadworks"]
 
 def main():
@@ -19,3 +21,11 @@ def main():
         print(msg)
 
 main()
+
+
+'''
+Get newest received message via signal api:
+curl -X GET -H "Content-Type: application/json" 'http://localhost:8080/v1/receive/{number} -d '{"number": "{sender_number}", "max_messages": "1"}'
+Send message via signal api:
+curl -X POST -H "Content-Type: application/json" 'http://localhost:8080/v2/send' -d '{"message": "{msg}", "number": "{n}", "recipients": ["{n}"]}' 
+'''
