@@ -4,65 +4,72 @@ class create_msg:
 
         self.road_of_interest = road_of_interest
         self.activity_dict = activity_dict
-        self.init_str = f"This is the current traffic situation on {self.road_of_interest}:\n\n"
-        self.close_str = f"\n\n Happy driving!"
+        self.response_dict = {}
+        self.init_str = f"{self.road_of_interest}"
+        self.close_str = f"Happy driving!"
 
 
-    def activity_msg(self, activity):
+    def activity_msg(self, activity_list):
 
-        filler_strs = ''
+        str_dict = {}
+        for activity in activity_list:
 
-        if activity['category'] == 'jams':
+            if activity['category'] == 'jams':
+                
+                key = activity['id']
+                filler_strs = {"Type": activity['category']
+                            , "Incident": activity['incidentType']
+                            , "From location": activity['from']
+                            , "To location": activity['to']
+                            , "Delay": activity['delay']
+                            , "Start time": activity['start']
+                            , "Explanation": activity['reason']
+                } 
 
-            filler_strs = [f"Type: {activity['category']}\n"
-                        , f"Incident: {activity['incidentType']}\n"
-                        , f"From location: {activity['from']}\n"
-                        , f"To location: {activity['to']}\n"
-                        , f"Delay: {activity['delay']}\n"
-                        , f"Start time: {activity['start']}\n"
-                        , f"Explanation: {activity['reason']}\n\n"
-            ] 
+                str_dict[key] = filler_strs
 
 
-        if activity['category'] == 'roadworks':
+            if activity['category'] == 'roadworks':
 
-            filler_strs = [f"Type: {activity['category']}\n"
-                        , f"Incident: {activity['incidentType']}\n"
-                        , f"From location: {activity['from']}\n"
-                        , f"To location: {activity['to']}\n"
-                        , f"From date: {activity['start']}\n"
-                        , f"To date: {activity['stop']}\n"
-                        , f"Explanation: {activity['reason']}\n\n"
-            ]            
-
+                key = activity['id']
+                filler_strs = {"Type": activity['category']
+                            , "Incident": activity['incidentType']
+                            , "From location": activity['from']
+                            , "To location": activity['to']
+                            , "From date": activity['start']
+                            , "To date": activity['stop']
+                            , "Explanation": activity['reason']
+                }           
+                
+                str_dict[key] = filler_strs
         
-        if activity['category'] == 'radars':
-            
-            filler_strs = [f"Type: {activity['category']}\n"
-                        , f"Incident: {activity['incidentType']}\n"
-                        , f"From location: {activity['from']}\n"
-                        , f"To location: {activity['to']}\n"
-                        , f"Hectometerpaal: {activity['HM']}\n"
-                        , f"Explanation: {activity['events'][0]['text']}\n\n"
-                        ]
+            if activity['category'] == 'radars':
+                
+                key = activity['id']
+                filler_strs = {"Type": activity['category']
+                            , "Incident": activity['incidentType']
+                            , "From location": activity['from']
+                            , "To location": activity['to']
+                            , "Hectometerpaal": activity['HM']
+                            , "Explanation": activity['events'][0]['text']
+                }
 
-        return filler_strs
+                str_dict[key] = filler_strs
+
+        return str_dict
         
     
     def create_msg(self):
         
-        total_str = ""
-
+        segment_dict = {}
         for segment, activities in self.activity_dict.items():
 
-            start_str = f"{segment}\n\n"
-            total_str += start_str
             for segment_activities in activities:
-                for activity in segment_activities:
-                    filler_strs = self.activity_msg(activity)
-                    for str in filler_strs:
-                        total_str += str
+  
+                str_dict = self.activity_msg(segment_activities)
+            
+            segment_dict[segment] = str_dict
         
-        final_str = self.init_str + total_str + self.close_str
+        self.response_dict[self.init_str] = segment_dict
 
-        return final_str
+        return self.response_dict
