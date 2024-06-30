@@ -1,10 +1,14 @@
 import requests 
+import os 
+from dotenv import load_dotenv
 
 class api:
 
     def __init__(self):
 
-        self.api_key = "8VzRhyPujV01WvpTwnUJucejIXMt5eht"
+        load_dotenv() 
+
+        self.api_key = os.getenv("api_key")
     
 
     def api(self):
