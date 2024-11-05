@@ -1,75 +1,52 @@
 class create_msg:
 
-    def __init__(self, road_of_interest, activity_dict: dict):
+    def __init__(self):
 
-        self.road_of_interest = road_of_interest
-        self.activity_dict = activity_dict
-        self.response_dict = {}
-        self.init_str = f"{self.road_of_interest}"
-        self.close_str = f"Happy driving!"
+        print("init msg generation")
 
 
-    def activity_msg(self, activity_list):
+    def activity_msg(self, road_name: str, activity: dict, segment_start: str, segment_end: str) -> dict:
 
         str_dict = {}
-        for activity in activity_list:
+        delay = ""
 
-            if activity['category'] == 'jams':
-                
+        if activity['road_name'] == road_name.upper().strip() and activity['segment_start'] == segment_start and activity['segment_end'] == segment_end:
+
+            if activity['event_name'] == 'jams' and activity['incident'] != 'road-closed':
                 key = activity['id']
-                filler_strs = {"Type": activity['category']
-                            , "Incident": activity['incidentType']
-                            , "From location": activity['from']
-                            , "To location": activity['to']
-                            , "Delay": activity['delay']
-                            , "Start time": activity['start']
-                            , "Explanation": activity['reason']
-                } 
+                delay = str(int(activity['delay']/60))
+                opening_string = f"Traffic jam on {road_name}: {activity['segment_start']} to {activity['segment_end']}."
+                info_string = f"Jam starts at {activity['jam_start']}, ends at {activity['jam_end']}."
+                end_string = f"{activity['incident']}: {activity['description']}, expected delay {delay} minutes"
 
-                str_dict[key] = filler_strs
-
-
-            if activity['category'] == 'roadworks':
-
-                key = activity['id']
-                filler_strs = {"Type": activity['category']
-                            , "Incident": activity['incidentType']
-                            , "From location": activity['from']
-                            , "To location": activity['to']
-                            , "From date": activity['start']
-                            , "To date": activity['stop']
-                            , "Explanation": activity['reason']
-                }           
+                str_dict['type'] = 'jam'
+                str_dict['key'] = key 
+                str_dict['opening'] = opening_string
+                str_dict['info'] = info_string
+                str_dict['end'] = end_string
                 
-                str_dict[key] = filler_strs
-        
-            if activity['category'] == 'radars':
-                
+            elif activity['event_name'] == 'radars':
                 key = activity['id']
-                filler_strs = {"Type": activity['category']
-                            , "Incident": activity['incidentType']
-                            , "From location": activity['from']
-                            , "To location": activity['to']
-                            , "Hectometerpaal": activity['HM']
-                            , "Explanation": activity['events'][0]['text']
-                }
+                opening_string = f"Warning: radar detected on {road_name}: {activity['segment_start']} to {activity['segment_end']}."
+                info_string = f"Radar located at HM {activity['location_hm']}."
 
-                str_dict[key] = filler_strs
+                str_dict['type'] = 'radar'
+                str_dict['key'] = key 
+                str_dict['opening'] = opening_string
+                str_dict['info'] = info_string
+                str_dict['end'] = ''
 
-        return str_dict
+        return str_dict, delay
         
     
-    def create_msg(self):
+    def create_msg(self, road_name: str, activity: dict, segment_start: str, segment_end: str) -> str:
         
-        segment_dict = {}
-        for segment, activities in self.activity_dict.items():
+        str_dict, delay = self.activity_msg(road_name, activity, segment_start, segment_end)
 
-            for segment_activities in activities:
-  
-                str_dict = self.activity_msg(segment_activities)
-            
-            segment_dict[segment] = str_dict
-        
-        self.response_dict[self.init_str] = segment_dict
+        try:
+            msg = f"{str_dict['opening']}\n\n{str_dict['info']}\n\n{str_dict['end']}"
+        except:
+            return '', delay
+        else:
+            return msg, delay
 
-        return self.response_dict

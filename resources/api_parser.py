@@ -2,7 +2,6 @@ class api_parser:
 
     def __init__(self, repsonse):
 
-        print("Init db parser")
         self.response = repsonse
 
     
@@ -20,8 +19,12 @@ class api_parser:
             segments = road["segments"]
 
             for segment in segments:
-                segment_start = segment["start"]
-                segment_end = segment["end"]
+                try:
+                    segment_start = segment["start"]
+                    segment_end = segment["end"]
+                except:
+                    segment_start = "" 
+                    segment_end = ""
 
                 if 'roadworks' in dict(segment).keys():
                     roadworks = segment["roadworks"]
