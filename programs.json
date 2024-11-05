@@ -1,0 +1,14 @@
+{
+    "programs": {
+        "1": {
+            "start": "Utrecht",
+            "to": "Den Haag",
+            "road": "A12"
+        },
+        "2": {
+            "start": "Den Haag",
+            "to": "Utrecht",
+            "road": "A12"
+        }
+    }
+}
