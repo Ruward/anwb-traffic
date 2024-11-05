@@ -1,0 +1,18 @@
+FROM ubuntu:jammy
+
+ENV PYTHONPATH /listener
+
+RUN apt-get update && apt-get -qq -y install \
+    curl \
+    python3.11 \
+    python3-pip
+
+COPY listener.py listener/listener.py
+
+WORKDIR /listener
+
+RUN pip3 install --no-cache-dir  \
+    python-dotenv \
+    requests 
+
+ENTRYPOINT [ "python3", "listener.py" ]

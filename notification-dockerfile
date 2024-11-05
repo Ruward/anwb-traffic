@@ -1,0 +1,21 @@
+FROM ubuntu:jammy
+
+ENV PYTHONPATH /api
+
+RUN apt-get update && apt-get -qq -y install \
+    curl \
+    python3.11 \
+    python3-pip
+
+COPY resources api/resources 
+COPY notifier.py api/notifier.py 
+COPY notifier-endpoint.py api/notifier-endpoint.py 
+
+WORKDIR /api
+
+RUN pip3 install --no-cache-dir  \
+    flask \
+    requests \
+    python-dotenv
+
+ENTRYPOINT [ "python3", "notifier-endpoint.py" ]
