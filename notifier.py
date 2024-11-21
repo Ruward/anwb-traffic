@@ -1,7 +1,7 @@
 from resources.anwb_api import api
 from resources.api_parser import api_parser
 #from resources.dao import DAO
-from resources.create_msg import create_msg
+from resources.create_msg import create_jam_msg, create_radar_msg
 from resources.send_msg import sender
 
 import sys
@@ -29,27 +29,24 @@ def main(road_of_interest: str, segment_start: str, segment_end: str):
   radars = False 
 
   if len(ja_list) > 0:
-    for activity in ja_list:
-      msg, delay = create_msg().create_msg(road_of_interest, activity, segment_start, segment_end)
-      
-      if len(msg) > 0:
-        jams = True 
-        act = "Jam"
-        sender(act, msg, road_of_interest, ntfy_pwd).send_jam(delay)
+    jam_msg, delay = create_jam_msg().create_msg(road_of_interest, ja_list, segment_start, segment_end)
+    
+    if len(jam_msg) > 0:
+      jams = True 
+      act = "Jam(s)"
+      sender(act, jam_msg, road_of_interest, ntfy_pwd).send_jam(delay)
   
   if len(rd_list) > 0:
-    for activity in rd_list:
-      msg, delay = create_msg().create_msg(road_of_interest, activity, segment_start, segment_end)
+    radar_msg, delay = create_radar_msg().create_msg(road_of_interest, rd_list, segment_start, segment_end)
 
-      if len(msg) > 0:
-        radars = True
-        act = "Radar"
-        sender(act, msg, road_of_interest, ntfy_pwd).send_radar()
+    if len(radar_msg) > 0:
+      radars = True
+      act = "Radar(s)"
+      sender(act, radar_msg, road_of_interest, ntfy_pwd).send_radar()
 
   if not jams and not radars:
     act = "All clear"
     msg = f"Currently no jams or radars on {road_of_interest}"
-    print(msg)
     delay = "0"
     sender(act, msg, road_of_interest, ntfy_pwd).send_jam(delay)
 

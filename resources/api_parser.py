@@ -59,7 +59,10 @@ class api_parser:
                         ja_dict['event_name'] = jam["category"]
                         ja_dict['jam_start'] = jam["from"]
                         ja_dict['jam_end'] = jam["to"]
-                        ja_dict['jam_starttime'] = segment["start"]
+                        try:
+                            ja_dict['jam_starttime'] = jam["start"]
+                        except:
+                            ja_dict['jam_starttime'] = "<unknown or not applicable>"
                         try: 
                             ja_dict['delay'] = jam["delay"]
                         except:
