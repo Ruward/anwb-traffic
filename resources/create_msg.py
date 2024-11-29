@@ -38,6 +38,7 @@ class create_jam_msg:
             str_dict['end'] = end_string
 
         elif len(jam_list) > 1:
+            activity = jam_list[0]
             opening_string = f"Multiple traffic jams on {road_name}: {activity['segment_start']} to {activity['segment_end']}."
             start_end_list = []
             delay_list = []
@@ -52,7 +53,7 @@ class create_jam_msg:
                 start_end_list.append(info_string)
                 delay_list.append(int(delay))
                 
-            surrogate_key = "-".join(surr_key)
+            surrogate_key = "-".join(str(surr_key))
             total_info = "\n".join(start_end_list)
             delay = sum(delay_list)
             end_string = f"Total expected delay {delay} minutes"
