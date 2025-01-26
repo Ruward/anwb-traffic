@@ -5,7 +5,7 @@ import os
 from dotenv import load_dotenv 
 
 
-def listen(ntfy_pwd: str) -> None: 
+def listen(ntfy_pwd: str, ip: str) -> None: 
 
     pwd = ntfy_pwd
 
@@ -16,7 +16,7 @@ def listen(ntfy_pwd: str) -> None:
         config = json.loads(file.read())
         file.close() 
 
-    response = requests.get(url='http://ntfy-server/A12-verkeer/json', 
+    response = requests.get(url=f'http://{ip}/A12-verkeer/json', 
                             auth=("ruward", pwd), 
                             stream=True)
 
@@ -50,5 +50,6 @@ def listen(ntfy_pwd: str) -> None:
 if __name__ == '__main__':
     load_dotenv() 
     pwd = os.getenv('ntfy_pwd')
+    ip = os.getenv('ntfy_ip')
 
-    listen(pwd)
+    listen(pwd, ip)

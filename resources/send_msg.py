@@ -2,8 +2,9 @@ import requests
 
 class sender:
 
-    def __init__(self, act: str, msg: str, road_of_interest: str, pwd: str):
+    def __init__(self, ip: str, act: str, msg: str, road_of_interest: str, pwd: str):
 
+        self.ip = ip
         self.act = act
         self.msg = msg
         self.road = road_of_interest
@@ -12,7 +13,7 @@ class sender:
     
     def send_jam(self, delay: str):
 
-        url = "http://ntfy-server/A12-verkeer"
+        url = f"http://{self.ip}/A12-verkeer"
         headers = {"Title": f"{self.act} on {self.road}, delay: {delay} minutes",
                    "Tags": "warning"}
 
@@ -26,7 +27,7 @@ class sender:
 
     def send_radar(self):
 
-        url = "http://ntfy-server/A12-verkeer"
+        url = f"http://{self.ip}/A12-verkeer"
         headers = {"Title": f"{self.act} on {self.road}, watch speed",
                    "Tags": "warning"}
 
